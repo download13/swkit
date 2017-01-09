@@ -2,17 +2,23 @@
 
 Helpers that make working with service workers a little easier.
 
-## Examples
+## Example
 
 ```javascript
 import {
 	on,
 	cacheAll,
-	createRouter
+	createRouter,
+	networkFirst
 } from 'swkit';
 
 
 const router = createRouter();
+const precacheNetworkFirst = networkFirst('precache');
+
+router.get('/', precacheNetworkFirst);
+
+router.get('/style.css', precacheNetworkFirst);
 
 router.get('/randomnumber', request => {
 	return new Response(Math.random().toString().substr(2));
@@ -24,11 +30,17 @@ router.get('/asyncrandomnumber', request => {
 	});
 });
 
-router.serveCache('precache');
+on('fetch', router.dispatch);
 
 on('install', e => {
-	return e.waitUntil(cacheAll('precache', ['/', '/main.js', '/style.css']));
+  e.waitUntil(
+    cacheAll('precache', ['/', '/style.css'])
+    .then(skipWaiting())
+  );
 });
 
-on('fetch', router.dispatch);
+on('activate', e => {
+  e.waitUntil(clients.claim());
+});
+
 ```
