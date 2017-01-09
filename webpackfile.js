@@ -3,7 +3,9 @@ module.exports = [
 		entry: './src/index.js',
 		output: {
 			path: './dist',
-			filename: 'index.js'
+			filename: 'index.js',
+			library: 'swkit',
+			libraryTarget: 'var'
 		},
 		module: {
 			loaders: [
@@ -18,9 +20,6 @@ module.exports = [
 					}
 				}
 			]
-		},
-		externals: {
-			//express: 'commonjs express'
 		}
 	}
 ];
