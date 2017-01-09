@@ -5,7 +5,7 @@ module.exports = [
 			path: './dist',
 			filename: 'index.js',
 			library: 'swkit',
-			libraryTarget: 'var'
+			libraryTarget: 'umd'
 		},
 		module: {
 			loaders: [
