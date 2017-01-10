@@ -55,4 +55,4 @@ on('activate', e => {
 
 ```
 
-`dist/index.js` is in [UMD](https://github.com/umdjs/umd) format so it can be imported by a build process, or simply used via [importScripts](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/importScripts).
+`dist/index.js` is in [UMD](https://github.com/umdjs/umd) format so it can be imported by a build process, or simply used via [importScripts](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/importScripts). If imported with `importScripts`, the contents of the library will be found under the global object `swkit`.
