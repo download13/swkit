@@ -54,3 +54,5 @@ on('activate', e => {
 });
 
 ```
+
+`dist/index.js` is in [UMD](https://github.com/umdjs/umd) format so it can be imported by a build process, or simply used via [importScripts](https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope/importScripts).
