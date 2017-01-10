@@ -2,6 +2,10 @@
 
 Helpers that make working with service workers a little easier.
 
+## install
+
+`npm install swkit` or `yarn add swkit`
+
 ## Example
 
 ```javascript
