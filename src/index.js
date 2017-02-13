@@ -87,7 +87,7 @@ export function cacheFirst(cacheName) {
 function fetchAndStore(request, cacheName) {
   return fetch(request)
     .then(res => {
-      return put(cacheName, req, res.clone())
+      return put(cacheName, request, res.clone())
         .then(() => res);
     });
 }
