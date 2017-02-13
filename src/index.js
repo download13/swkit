@@ -74,10 +74,22 @@ export function cacheFirst(cacheName) {
   return (req, params) => {
     return matchCache(cacheName, req)
     .then(res => {
-      if(res) return res;
-      else return fetch(req);
+      if(res) {
+        fetchAndStore(req, cacheName);
+        return res;
+      } else {
+        return fetchAndStore(req, cacheName);
+      }
     });
   };
+}
+
+function fetchAndStore(request, cacheName) {
+  return fetch(request)
+    .then(res => {
+      return put(cacheName, req, res.clone())
+        .then(() => res);
+    });
 }
 
 function getHeaders(headers) {
