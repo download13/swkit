@@ -1,13 +1,12 @@
 {
   "name": "swkit",
-  "version": "0.3.2",
+  "version": "1.0.0",
   "description": "Service worker helper functions",
   "main": "dist/index.js",
   "repository": "https://github.com/download13/swkit.git",
   "author": "Erin Dachtler <download333@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "range-parser": "1.2.0",
     "route-parser": "0.0.5"
   },
   "devDependencies": {

@@ -1,5 +1,4 @@
 import Route from 'route-parser';
-import parseRange from 'range-parser';
 
 
 export function on(eventName, handler, options) {
@@ -16,39 +15,12 @@ export function put(cacheName, req, res) {
 
 export function matchCache(cacheName, req) {
   return caches.open(cacheName)
-  .then(cache => cache.match(req))
-  .then(res => {
-    if(res) return rangeResponse(req, res);
-    return res;
-  });
+    .then(cache => cache.match(req));
 }
 
-function rangeResponse(req, res) {
-  return res.clone().blob()
-  .then(body => {
-    const range = parseRange(body.size, req.headers.get('range') || '');
-
-    if(Array.isArray(range)) {
-      const {start, end} = range[0];
-      const partialBody = body.slice(start, end + 1);
-
-      return new Response(partialBody, {
-        status: 206,
-        headers: {
-          'content-type': res.headers.get('content-type'),
-          'content-length': partialBody.size,
-          'content-range': `bytes ${start}-${end}/${body.size}`
-        }
-      });
-    }
-
-    return res;
-  });
-}
-
-export function matchCaches(cacheNames, req) {
+export function matchCaches(cacheNames, request) {
   const tryMatch = index => {
-    return matchCache(cacheNames[index], req)
+    return matchCache(cacheNames[index], request)
     .then(res => {
       if(res) return res;
       if(index + 1 >= cacheNames.length) return Promise.resolve(null);
@@ -60,32 +32,51 @@ export function matchCaches(cacheNames, req) {
 }
 
 export function networkFirst(cacheName) {
-  return (req, params) => {
-    return fetch(req)
-    .then(res => {
-      return put(cacheName, req, res.clone())
-      .then(() => res);
-    })
-    .catch(() => matchCache(cacheName, req));
+  return (request, params) => {
+    return fetchAndStore(request, cacheName)
+      .catch(() => matchCache(cacheName, request));
   };
 }
 
 export function cacheFirst(cacheName) {
-  return (req, params) => {
-    return matchCache(cacheName, req)
+  return (request, params) => {
+    return matchCache(cacheName, request)
     .then(res => {
       if(res) {
-        fetchAndStore(req, cacheName);
+        fetchAndStore(request, cacheName);
         return res;
       } else {
-        return fetchAndStore(req, cacheName);
+        return fetchAndStore(request, cacheName);
+      }
+    });
+  };
+}
+
+export function ensureCached(cacheName) {
+  return (request, params) => {
+    return matchCache(cacheName, request)
+    .then(res => {
+      if(res) {
+        return res;
+      } else {
+        return fetchAndStore(request, cacheName);
       }
     });
   };
 }
 
 function fetchAndStore(request, cacheName) {
-  return fetch(request)
+  request = new Request(request.url, {
+    method: request.method,
+    headers: request.headers,
+    mode: 'same-origin'
+  });
+
+  return fetch(request, {
+    headers: {
+      'Cache-Control': 'no-cache'
+    }
+  })
     .then(res => {
       return put(cacheName, request, res.clone())
         .then(() => res);
