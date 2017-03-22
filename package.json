@@ -1,6 +1,6 @@
 {
   "name": "swkit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Service worker helper functions",
   "main": "dist/index.js",
   "repository": "https://github.com/download13/swkit.git",
