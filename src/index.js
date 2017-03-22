@@ -78,8 +78,10 @@ function fetchAndStore(request, cacheName) {
     }
   })
     .then(res => {
-      return put(cacheName, request, res.clone())
-        .then(() => res);
+      if(res.ok) {
+        return put(cacheName, request, res.clone())
+          .then(() => res);
+      }
     });
 }
 
