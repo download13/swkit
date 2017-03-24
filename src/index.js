@@ -43,10 +43,12 @@ export function cacheFirst(cacheName) {
     return matchCache(cacheName, request)
     .then(res => {
       if(res) {
-        fetchAndStore(request, cacheName);
+        fetchAndStore(request, cacheName)
+          .catch(err => null);
         return res;
       } else {
-        return fetchAndStore(request, cacheName);
+        return fetchAndStore(request, cacheName)
+          .catch(err => null);
       }
     });
   };
@@ -59,7 +61,8 @@ export function ensureCached(cacheName) {
       if(res) {
         return res;
       } else {
-        return fetchAndStore(request, cacheName);
+        return fetchAndStore(request, cacheName)
+          .catch(err => null);
       }
     });
   };
