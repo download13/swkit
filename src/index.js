@@ -1,4 +1,4 @@
-import Route from 'route-parser';
+import * as Route from 'route-parser';
 
 
 export function on(eventName, handler, options) {
