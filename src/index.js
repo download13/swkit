@@ -47,8 +47,7 @@ export function cacheFirst(cacheName) {
           .catch(err => null);
         return res;
       } else {
-        return fetchAndStore(request, cacheName)
-          .catch(err => null);
+        return fetchAndStore(request, cacheName);
       }
     });
   };
@@ -61,8 +60,7 @@ export function ensureCached(cacheName) {
       if(res) {
         return res;
       } else {
-        return fetchAndStore(request, cacheName)
-          .catch(err => null);
+        return fetchAndStore(request, cacheName);
       }
     });
   };
@@ -119,14 +117,11 @@ class Router {
         if(!params) continue;
 
         const res = handler(request, params);
-        if(res instanceof Response) {
-          e.respondWith(Promise.resolve(res));
-          return;
-        } else if(res instanceof Promise) {
+        if(res instanceof Response || res instanceof Promise) {
           e.respondWith(res);
-          return;
         } else {
           console.error('Error handling ' + request.url);
+          console.log(res);
           throw new Error('Invalid handler response. Must be instance of Response or Promise.');
         }
       }
